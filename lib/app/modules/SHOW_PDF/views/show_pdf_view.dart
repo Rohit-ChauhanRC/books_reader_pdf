@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:get/get.dart';
 
 import '../controllers/show_pdf_controller.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class ShowPdfView extends GetView<ShowPdfController> {
@@ -22,36 +21,76 @@ class ShowPdfView extends GetView<ShowPdfController> {
               controller.pdfViewerKey.currentState?.openBookmarkView();
             },
           ),
+          // IconButton(
+          //   icon: const Icon(Icons.save),
+          //   onPressed: controller.savePdfWithAnnotations,
+          // ),
+          // Obx(() => IconButton(
+          //       icon: Icon(controller.isHighlighting.value
+          //           ? Icons.highlight
+          //           : Icons.highlight_outlined),
+          //       onPressed: controller.toggleHighlight,
+          //     )),
+          // Obx(() => IconButton(
+          //       icon: Icon(controller.isDrawing.value
+          //           ? Icons.edit
+          //           : Icons.edit_outlined),
+          //       onPressed: controller.toggleDrawing,
+          //     )),
         ],
       ),
-      // body: PDFView(
-      //   filePath: controller.pdfPath,
-      //   enableSwipe: true,
-      //   swipeHorizontal: true,
-      //   autoSpacing: true,
-      //   pageFling: true,
-      //   onRender: (pages) {
-      //     print("PDF Rendered with $pages pages.");
-      //     controller.pageCount = "Pages: 0/$pages";
-      //   },
-      //   onError: (error) {
-      //     print("Error while loading PDF: $error");
-      //   },
-      //   onPageError: (page, error) {
-      //     print("Error on page $page: $error");
-      //   },
-      //   onViewCreated: (controller) {
-      //     print("PDF View created.");
-      //   },
-      //   onPageChanged: (page, total) {
-      //     controller.pageCount = "Page changed: $page/$total";
-      //   },
-      // ),
-      body: SfPdfViewer.file(
-        File(controller.pdfPath),
-        key: controller.pdfViewerKey,
-        enableTextSelection: true,
+      body: Stack(
+        children: [
+          SfPdfViewer.file(
+            File(controller.pdfPath),
+            key: controller.pdfViewerKey,
+            enableTextSelection: true,
+            controller: controller.pdfViewerController,
+            onDocumentLoaded: (details) {
+              controller.onDocumentLoaded(details);
+
+              final List<Annotation> annotations =
+                  controller.pdfViewerController.getAnnotations();
+              if (annotations.isNotEmpty) {
+                final Annotation annotation = annotations.first;
+                if (annotation is HighlightAnnotation) {
+                  final Color color = annotation.color;
+                  final double opacity = annotation.opacity;
+                }
+              }
+            },
+            onTextSelectionChanged: controller.onTextSelectionChanged,
+            canShowTextSelectionMenu: false,
+            pageLayoutMode: PdfPageLayoutMode.single,
+            interactionMode: PdfInteractionMode.selection,
+          ),
+
+          // if (controller.overlayEntry.value != null)
+          //   controller.overlayEntry.value!.builder(context),
+          if (controller.overlayEntry.value != null)
+            Overlay(
+              initialEntries: [controller.overlayEntry.value!],
+            ),
+        ],
       ),
+      // floatingActionButton: IconButton(
+      //     icon: const Icon(
+      //       Icons.add_circle_sharp,
+      //       color: Colors.lightGreen,
+      //       size: 40,
+      //     ),
+      //     onPressed: () {
+      //       controller.sele();
+      //     }),
+    );
+  }
+
+  Widget _buildDrawingCanvas() {
+    return GestureDetector(
+      onPanUpdate: (details) {
+        // Future implementation for drawing
+      },
+      child: Container(color: Colors.yellow),
     );
   }
 }

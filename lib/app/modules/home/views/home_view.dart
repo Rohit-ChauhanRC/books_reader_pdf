@@ -11,7 +11,7 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Downloaded Files'),
+          title: const Text('Books List'),
           centerTitle: true,
         ),
         body: Obx(
@@ -19,10 +19,10 @@ class HomeView extends GetView<HomeController> {
               ? const Center(child: Text("No PDF files found in the directory"))
               : Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("Base Path: ${controller.folderPath}"),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: Text("Base Path: ${controller.folderPath}"),
+                    // ),
                     Expanded(
                       child: ListView.builder(
                         itemCount: controller.pdfFiles.length,

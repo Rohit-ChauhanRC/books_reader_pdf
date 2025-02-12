@@ -34,6 +34,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "Book Readers",
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
